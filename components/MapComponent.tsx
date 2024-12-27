@@ -111,10 +111,8 @@ const MapComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    // For static starting location, fetch route directly
     fetchRoute(startingLocation.latitude, startingLocation.longitude);
 
-    // Uncomment below line to fetch current location instead
     // fetchCurrentLocation();
   }, []);
 
