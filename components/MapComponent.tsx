@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Alert, PermissionsAndroid, Platform } from 'react-native';
 import MapView, { Marker, Polyline, Region } from 'react-native-maps';
-import Geolocation from 'react-native-geolocation-service';
 
 interface Location {
   latitude: number;
@@ -11,9 +10,13 @@ interface Location {
 }
 
 const MapComponent: React.FC = () => {
-  const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
-  const [routeCoordinates, setRouteCoordinates] = useState<Location[]>([]);
-  const [loading, setLoading] = useState(false);
+  // Static starting location
+  const startingLocation: Location = {
+    latitude: 9.958592,
+    longitude: 78.188828,
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.005,
+  };
 
   const destination: Location = {
     latitude: 9.914606,
@@ -22,6 +25,9 @@ const MapComponent: React.FC = () => {
     longitudeDelta: 0.005,
   };
 
+  const [routeCoordinates, setRouteCoordinates] = useState<Location[]>([]);
+
+  /*
   const requestLocationPermission = async () => {
     try {
       console.log('Requesting location permission...');
@@ -46,26 +52,18 @@ const MapComponent: React.FC = () => {
     const hasPermission = await requestLocationPermission();
     if (!hasPermission) return;
 
-    setLoading(true);
     Geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        setCurrentLocation({
-          latitude,
-          longitude,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005,
-        });
         fetchRoute(latitude, longitude);
-        setLoading(false);
       },
       (error) => {
         Alert.alert('Error', error.message);
-        setLoading(false);
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
     );
   };
+  */
 
   const fetchRoute = async (startLat: number, startLng: number) => {
     try {
@@ -113,17 +111,19 @@ const MapComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchCurrentLocation();
+    // For static starting location, fetch route directly
+    fetchRoute(startingLocation.latitude, startingLocation.longitude);
+
+    // Uncomment below line to fetch current location instead
+    // fetchCurrentLocation();
   }, []);
 
   return (
     <MapView
       style={styles.map}
-      initialRegion={currentLocation ?? destination}
+      initialRegion={startingLocation}
     >
-      {currentLocation && (
-        <Marker coordinate={currentLocation} title="You are here" />
-      )}
+      <Marker coordinate={startingLocation} title="Starting Point" />
       <Marker coordinate={destination} title="Destination" />
       {routeCoordinates.length > 0 && (
         <Polyline coordinates={routeCoordinates} strokeWidth={4} />

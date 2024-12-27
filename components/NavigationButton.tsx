@@ -1,19 +1,21 @@
 import React from 'react';
-import { View, Button, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import openMap from 'react-native-open-maps';
 
 const NavigationButton: React.FC = () => {
   const startNavigation = () => {
     openMap({
-      latitude: 13.0827, 
-      longitude: 80.2707,
-      zoom: 16,
+      start: "9.958592,78.188828", 
+      end: " 9.914606,78.122604", 
+      provider: "google", 
     });
   };
 
   return (
     <View style={styles.container}>
-      <Button title="Navigate to Destination" onPress={startNavigation} />
+      <TouchableOpacity style={styles.button} onPress={startNavigation}>
+        <Text style={styles.buttonText}>Navigate to Destination</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -21,6 +23,19 @@ const NavigationButton: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  button: {
+    backgroundColor: 'green',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
